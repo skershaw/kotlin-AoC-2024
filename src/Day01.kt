@@ -1,21 +1,45 @@
+
+fun <T>List<List<T>>.transpose(): List<List<T>> {
+    return (this[0].indices).map { i -> (this.indices).map { j -> this[j][i] } }
+}
+
+fun frequencyMap(list: List<Int>): MutableMap<Int, Int> {
+    val map = mutableMapOf<Int, Int>()
+    for (value in list) {
+        val count = map.getOrDefault(value, 0)
+        map[value] = count + 1
+    }
+    return map
+}
+
 fun main() {
+
     fun part1(input: List<String>): Int {
-        return input.size
+        val out :Int = input.map { it.split("   ") }
+            .transpose()
+            .map { it.map { it.toInt() }.sorted() }
+            .transpose()
+            .map { it -> Math.abs(it[0] - it[1]) }
+            .reduce { acc, i -> acc + i }
+        return out
     }
 
     fun part2(input: List<String>): Int {
-        return input.size
+        val (a,b) = input.map { it.split("   ") }
+            .transpose()
+            .map { it.map { it.toInt() } }
+        val fmap = b.groupingBy { it }.eachCount()
+
+        val out = a.map { it * fmap.getOrDefault(it, 0) }
+            .reduce { acc, i -> acc + i }
+        return out
     }
 
-    // Test if implementation meets criteria from the description, like:
-    check(part1(listOf("test_input")) == 1)
-
-    // Or read a large test input from the `src/Day01_test.txt` file:
     val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1)
 
-    // Read the input from the `src/Day01.txt` file.
     val input = readInput("Day01")
-    part1(input).println()
+//    part1(testInput).println()
+//    part1(input).println()
+//    part2(testInput).println()
     part2(input).println()
 }
